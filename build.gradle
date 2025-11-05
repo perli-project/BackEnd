@@ -1,0 +1,100 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.5.7'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'aicard'
+version = '0.0.1-SNAPSHOT'
+description = 'AI 스마트 카드 실적 매니저'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+ext {
+	set('springAiVersion', "1.0.3")
+	set('springCloudVersion', "2025.0.0")
+}
+
+dependencies {
+    // ===== 최적화/수치 =====
+    implementation 'org.optaplanner:optaplanner-spring-boot-starter'          // 제약 기반 최적화(실적 분배 플랜)
+    implementation 'org.apache.commons:commons-math3'                          // 통계/수치 연산(분포·회귀·필터 등)
+
+    // ===== 딥러닝/GBDT =====
+    implementation 'org.deeplearning4j:deeplearning4j-core'                    // DL4J 코어(LSTM/Transformer 등)
+    implementation 'org.nd4j:nd4j-native-platform'                             // DL4J 연산 백엔드(CPU 네이티브)
+    implementation 'ml.dmlc:xgboost4j'                                         // XGBoost 자바 바인딩(GBDT/LTR)
+    implementation 'ml.dmlc:xgboost4j-spark'                                   // (스파크 사용 시) 분산 학습/예측
+
+    // ===== Smile(통계/ML) =====
+    implementation 'com.github.haifengl:smile-core'                            // Smile 코어(클러스터링/통계/ML)
+    implementation 'com.github.haifengl:smile-graph'                           // (선택) 그래프/네트워크 알고리즘
+    implementation 'com.github.haifengl:smile-nlp'                             // (선택) 간단 NLP 유틸
+
+    // ===== Tribuo(자바 ML) =====
+    implementation 'org.tribuo:tribuo-core'                                     // Tribuo 코어
+    implementation 'org.tribuo:tribuo-classification'                           // 분류
+    implementation 'org.tribuo:tribuo-clustering'                               // 군집(K-Means 등)
+    implementation 'org.tribuo:tribuo-regression'                               // 회귀
+
+    // ===== 규칙 엔진(Drools/KIE) =====
+    implementation 'org.drools:drools-core:10.1.0'                             // 규칙엔진 코어(실적/제외 룰)
+    implementation 'org.drools:drools-compiler:10.1.0'                         // DRL 규칙 컴파일러
+    implementation 'org.kie:kie-api:10.1.0'                                    // KIE 공통 API
+    implementation 'org.kie:kie-ci:10.1.0'                                     // (선택) 규칙 변경 감지/재로딩
+
+    // ===== LLM 연동 =====
+    implementation 'dev.langchain4j:langchain4j:1.1.0'                         // LangChain4j 코어(체인/툴/메모리)
+    implementation 'dev.langchain4j:langchain4j-openai:1.1.0'                  // OpenAI 어댑터
+    implementation 'org.springframework.ai:spring-ai-starter-model-openai'     // Spring AI(OpenAI 모델 스타터)
+
+    // ===== 알림/외부 서비스 =====
+    implementation 'com.google.firebase:firebase-admin:9.7.0'                  // 서버 사이드 FCM/Firestore Admin
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'  // 선언적 HTTP 클라이언트(외부 API)
+
+    // ===== Spring 핵심 =====
+    implementation 'org.springframework.boot:spring-boot-starter-web'          // REST API(MVC/JSON)
+    implementation 'org.springframework.boot:spring-boot-starter-security'     // 인증/인가
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'     // JPA/Hibernate
+    implementation 'org.springframework.boot:spring-boot-starter-batch'        // 배치 잡/스케줄 처리
+
+    // ===== MyBatis =====
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.5' // 명시적 SQL/매퍼(복잡쿼리/배치)
+
+    // ===== Lombok/드라이버 =====
+    compileOnly 'org.projectlombok:lombok'                                      // 보일러플레이트 제거(컴파일 전용)
+    annotationProcessor 'org.projectlombok:lombok'                              // Lombok 애노테이션 프로세서
+    runtimeOnly 'com.mysql:mysql-connector-j'                                   // MySQL 드라이버(런타임)
+
+    // ===== Test =====
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'      // JUnit/AssertJ/MockMvc 번들
+    testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.5' // MyBatis 테스트 유틸
+    testImplementation 'org.springframework.batch:spring-batch-test'            // Batch 테스트 유틸
+    testImplementation 'org.springframework.security:spring-security-test'      // Security 테스트(Mock 인증)
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'                // JUnit 플랫폼 런처
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
