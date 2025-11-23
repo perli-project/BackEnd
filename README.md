@@ -42,8 +42,8 @@
 
 <br>
 
-## 🤖 백엔드 시스템 아키텍처
-
+## 🤖 ERD
+<img width="3021" height="1922" alt="ERD (1)" src="https://github.com/user-attachments/assets/654e2d82-1e4a-4b7e-acdd-69cf282bc584" />
 
 <br>
 
