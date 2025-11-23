@@ -31,6 +31,9 @@ ext {
 
 dependencies {
 
+    // ===== LLM 연동 =====
+    implementation 'org.springframework.ai:spring-ai-ollama-spring-boot-starter'     // Spring AI(OpenAI 모델 스타터)
+
     // ===== 규칙 엔진(Drools/KIE) =====
     implementation 'org.drools:drools-core:10.1.0'                             // 규칙엔진 코어(실적/제외 룰)
     implementation 'org.drools:drools-compiler:10.1.0'                         // DRL 규칙 컴파일러
